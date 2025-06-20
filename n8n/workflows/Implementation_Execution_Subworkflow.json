@@ -1,0 +1,73 @@
+{
+  "name": "Implementation Execution Subworkflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "start-impl-sub-001",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "createComment",
+        "owner": {
+          "__rl": true,
+          "value": "={{$json.body.repository.owner.login}}",
+          "mode": ""
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{$json.body.repository.name}}",
+          "mode": ""
+        },
+        "issueNumber": "={{$json.body.issue.number}}",
+        "body": "@claude PRを作成して実装して、PRの作成にはghコマンドを使うこと。終わったらghコマンドで作成したPRに既存の\"workflow:ready-for-review\"のラベルをつけること"
+      },
+      "id": "dea45268-21b9-4486-a4c0-033432c3d10c",
+      "name": "Add Implement Comment",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ],
+      "webhookId": "1f297945-a900-442b-b188-84c9f7f28d97",
+      "credentials": {
+        "githubApi": {
+          "id": "SDX5mbXB67Z0KGhG",
+          "name": "GitHub account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Add Implement Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "timezone": "Asia/Tokyo"
+  },
+  "versionId": "b5029644-63ef-44ac-a2ba-06cdce026fd2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b4f1505fe7bc037e423603785c58ab792d492a139be9842d02b0c876096ea7c7"
+  },
+  "id": "NRTSYOoX2oNYRzu3",
+  "tags": []
+}

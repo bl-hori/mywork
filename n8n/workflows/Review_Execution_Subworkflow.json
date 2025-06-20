@@ -1,0 +1,73 @@
+{
+  "name": "Review Execution Subworkflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "506c0d32-2ada-4110-8a30-94f6711a2da6",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        100,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.github.com/repos/{{ $json.body.pull_request.url.split('/')[4] }}/{{ $json.body.pull_request.url.split('/')[5] }}/issues/{{ $json.body.number }}/comments",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "body",
+              "value": "@claude レビューして"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b5ab13e7-90c9-459f-be25-0219390207e0",
+      "name": "Add Review Comment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        -20
+      ],
+      "credentials": {
+        "githubApi": {
+          "id": "SDX5mbXB67Z0KGhG",
+          "name": "GitHub account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Add Review Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "timezone": "Asia/Tokyo"
+  },
+  "versionId": "14d720b3-05bf-4c5f-89ac-c76c66fb33fa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b4f1505fe7bc037e423603785c58ab792d492a139be9842d02b0c876096ea7c7"
+  },
+  "id": "n4XF9Fj09jdYLkoy",
+  "tags": []
+}

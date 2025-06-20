@@ -1,0 +1,73 @@
+{
+  "name": "Issue Analysis Subworkflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "6317ae97-278f-4c4d-9b51-f6b4c6e91875",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        520,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "createComment",
+        "owner": {
+          "__rl": true,
+          "value": "={{$json.body.repository.owner.login}}",
+          "mode": ""
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{$json.body.repository.name}}",
+          "mode": ""
+        },
+        "issueNumber": "={{$json.body.issue.number}}",
+        "body": "@claude このissueをコードベースをもとに実装せず分析して実行計画を立てて、終わったらghコマンドを使用して既存の\"workflow:ready-for-impl\"ラベルをつけて"
+      },
+      "id": "a1f5b315-d37d-4201-a350-53ec19e6f867",
+      "name": "Add Analysis Comment",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        740,
+        320
+      ],
+      "webhookId": "1f297945-a900-442b-b188-84c9f7f28d97",
+      "credentials": {
+        "githubApi": {
+          "id": "SDX5mbXB67Z0KGhG",
+          "name": "GitHub account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Add Analysis Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "timezone": "Asia/Tokyo"
+  },
+  "versionId": "02d9981a-1c7c-4602-aafb-7d5200154cfb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b4f1505fe7bc037e423603785c58ab792d492a139be9842d02b0c876096ea7c7"
+  },
+  "id": "VwOJ3chjq5bpEag5",
+  "tags": []
+}

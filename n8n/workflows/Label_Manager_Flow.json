@@ -1,0 +1,253 @@
+{
+  "name": "Label Manager Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "github-label-analysis",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "9f430b9c-758c-4541-822e-6abe75f87bbc",
+      "name": "GitHub Label Webhook (Unified)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        80
+      ],
+      "webhookId": "unified-webhook-id"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.body.action}}",
+              "value2": "labeled"
+            }
+          ]
+        }
+      },
+      "id": "692787bd-2fc4-47b8-b28a-bcf6a6ad4ebc",
+      "name": "Action Filter",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{$json.body.label.name}}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "workflow:ready-for-analysis"
+            },
+            {
+              "value2": "workflow:ready-for-impl",
+              "output": 1
+            },
+            {
+              "value2": "workflow:ready-for-review",
+              "output": 2
+            }
+          ]
+        }
+      },
+      "id": "dc322629-d924-4acc-b3ab-d5cd2c572713",
+      "name": "Label Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "VwOJ3chjq5bpEag5",
+        "options": {}
+      },
+      "id": "4656ae1f-00d8-423e-990d-8c722c9f7453",
+      "name": "Execute Analysis Subworkflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        60,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "NRTSYOoX2oNYRzu3",
+        "options": {}
+      },
+      "id": "7a291e7d-990a-4524-8409-783dd86cf13a",
+      "name": "Execute Implementation Subworkflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        80,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "f05dae7f-8313-40fa-ab6c-927b3eddd660",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        700,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "0269b328-a703-4bcf-9e55-abd201fe8b2f",
+      "name": "Ignore Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "n4XF9Fj09jdYLkoy",
+          "mode": "list",
+          "cachedResultName": "Review Execution Subworkflow"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        100,
+        300
+      ],
+      "id": "905fd1db-b3ae-4ae1-a6aa-d814e80c24f3",
+      "name": "Execute Review Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "GitHub Label Webhook (Unified)": {
+      "main": [
+        [
+          {
+            "node": "Action Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Action Filter": {
+      "main": [
+        [
+          {
+            "node": "Label Router",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ignore Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Label Router": {
+      "main": [
+        [
+          {
+            "node": "Execute Analysis Subworkflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Implementation Subworkflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Review Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Execute Analysis Subworkflow": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Implementation Subworkflow": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Review Workflow": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7eba012d-0f90-4c32-b6e9-ecd4b0186709",
+  "meta": {
+    "instanceId": "b4f1505fe7bc037e423603785c58ab792d492a139be9842d02b0c876096ea7c7"
+  },
+  "id": "GtuWHGPHdiSTN8GT",
+  "tags": []
+}
